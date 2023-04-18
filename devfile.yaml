@@ -18,7 +18,7 @@ commands:
       workingDir: ${PROJECT_SOURCE}
     id: build-cluster-app
   - exec:
-      commandLine: ./makeUniquePathByDateAndSend.sh && echo -e "\e[32mDone.\e[0m upload-cluster-app"
+      commandLine: 'scp -P ${input:port} ${input:path}${input:file} ${input:user}@${input:host}:/home/${input:user} && ssh -p ${input:port} ${input:user}@${input:host} rpm -Uvh --force --nodeps ${input:file} && echo Install rpm done, restarting app && ssh -p ${input:port} ${input:user}@${input:host} systemctl restart hmi && echo -e "\e[32mDone.\e[0m instant-deploy"'
       component: theia-ide
-      workingDir: ${PROJECT_SOURCE}
-    id: upload-cluster-app
+      workingDir: '${PROJECT_SOURCE}'
+    id: instant-deploy
