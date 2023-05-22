@@ -13,6 +13,11 @@ components:
     name: cluster-build-image
 commands:
   - exec:
+      commandLine: /bin/bash
+      component: cluster-build-image
+      workingDir: ${PROJECT_SOURCE}
+    id: cluster-app-shell
+  - exec:
       commandLine: ./rpm_compile.sh && echo "\e[32mDone.\e[0m cluster-build-image"
       component: cluster-build-image
       workingDir: ${PROJECT_SOURCE}
