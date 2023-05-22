@@ -3,6 +3,24 @@ metadata:
   name: cluster-hmi-linuxrt-main
 components:
   - container:
+      env:
+        - name: PLUGIN_REMOTE_ENDPOINT_EXECUTABLE
+          value: /remote-endpoint/plugin-remote-endpoint
+        - name: THEIA_PLUGINS
+          value: 'local-dir:///plugins/sidecars/universal-developer-image'
+        - name: CHE_DASHBOARD_URL
+          value: 'https://192.168.49.2.nip.io'
+        - name: CHE_PLUGIN_REGISTRY_URL
+          value: 'https://192.168.49.2.nip.io/plugin-registry/v3'
+        - name: CHE_PLUGIN_REGISTRY_INTERNAL_URL
+          value: 'http://plugin-registry.eclipse-che.svc:8080/v3'
+        - name: OPENVSX_REGISTRY_URL
+          value: 'https://open-vsx.org'
+      image: 'quay.io/devfile/universal-developer-image:ubi8-38da5c2'
+      memoryLimit: 2Gi
+      sourceMapping: /projects
+    name: universal-developer-image
+  - container:
       args:
         - sh
         - '-c'
