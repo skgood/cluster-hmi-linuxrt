@@ -42,16 +42,16 @@ commands:
     id: build-cluster-app
   - exec:
       commandLine: 'scp -P ${input:port} ${input:path}${input:file} ${input:user}@${input:host}:/home/${input:user} && ssh -p ${input:port} ${input:user}@${input:host} rpm -Uvh --force --nodeps ${input:file} && echo Install rpm done, restarting app && ssh -p ${input:port} ${input:user}@${input:host} systemctl restart hmi && echo -e "\e[32mDone.\e[0m instant-deploy"'
-      component: theia-ide
+      component: universal-developer-image
       workingDir: '${PROJECT_SOURCE}'
     id: instant-deploy
   - exec:
       commandLine: './makeUniquePathByDateAndSend.sh && echo -e "\e[32mDone.\e[0m upload-cluster-app"'
-      component: theia-ide
+      component: universal-developer-image
       workingDir: '${PROJECT_SOURCE}'
     id: upload-cluster-app
   - exec:
       commandLine: 'wget -O /projects/${input:file} http://10.92.6.108:8082/packages${input:path}${input:file} -P /projects/ &&  scp -P ${input:port} /projects/${input:file} ${input:user}@${input:host}:/home/${input:user} && ssh -p ${input:port} ${input:user}@${input:host} rpm -Uvh --force --nodeps /home/${input:user}/${input:file} && echo Install rpm done, restarting app && ssh -p ${input:port} ${input:user}@${input:host} systemctl restart hmi  && echo -e "\e[32mDone.\e[0m remote-deploy"'
-      component: theia-ide
+      component: universal-developer-image
       workingDir: '${PROJECT_SOURCE}'
     id: remote-deploy
