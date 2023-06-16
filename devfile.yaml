@@ -16,7 +16,7 @@ components:
           value: 'http://plugin-registry.eclipse-che.svc:8080/v3'
         - name: OPENVSX_REGISTRY_URL
           value: 'https://open-vsx.org'
-      image: 'quay.io/devfile/universal-developer-image:ubi8-38da5c2'
+      image: 'artifactory-mb.harman.com:5036/aebt/ubi:0.1'
       memoryLimit: 2Gi
       sourceMapping: /projects
     name: universal-developer-image
@@ -33,25 +33,15 @@ commands:
   - exec:
       commandLine: /bin/bash
       component: cluster-build-image
-      workingDir: ${PROJECT_SOURCE}
+      workingDir: /projects/cluster-hmi-linuxrt
     id: cluster-app-shell
   - exec:
       commandLine: ./rpm_compile.sh && echo "\e[32mDone.\e[0m cluster-build-image"
       component: cluster-build-image
-      workingDir: ${PROJECT_SOURCE}
+      workingDir: /projects/cluster-hmi-linuxrt
     id: build-cluster-app
-  - exec:
-      commandLine: 'scp -P ${input:port} ${input:path}${input:file} ${input:user}@${input:host}:/home/${input:user} && ssh -p ${input:port} ${input:user}@${input:host} rpm -Uvh --force --nodeps ${input:file} && echo Install rpm done, restarting app && ssh -p ${input:port} ${input:user}@${input:host} systemctl restart hmi && echo -e "\e[32mDone.\e[0m instant-deploy"'
-      component: universal-developer-image
-      workingDir: '${PROJECT_SOURCE}'
-    id: instant-deploy
   - exec:
       commandLine: './makeUniquePathByDateAndSend.sh && echo -e "\e[32mDone.\e[0m upload-cluster-app"'
       component: universal-developer-image
-      workingDir: '${PROJECT_SOURCE}'
+      workingDir: /projects/cluster-hmi-linuxrt
     id: upload-cluster-app
-  - exec:
-      commandLine: 'wget -O /projects/${input:file} http://10.92.6.108:8082/packages${input:path}${input:file} -P /projects/ &&  scp -P ${input:port} /projects/${input:file} ${input:user}@${input:host}:/home/${input:user} && ssh -p ${input:port} ${input:user}@${input:host} rpm -Uvh --force --nodeps /home/${input:user}/${input:file} && echo Install rpm done, restarting app && ssh -p ${input:port} ${input:user}@${input:host} systemctl restart hmi  && echo -e "\e[32mDone.\e[0m remote-deploy"'
-      component: universal-developer-image
-      workingDir: '${PROJECT_SOURCE}'
-    id: remote-deploy
